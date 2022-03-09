@@ -5,6 +5,7 @@
 #include "map"
 #include "vector"
 #include "list"
+#include "set"
 
 template<typename T>
 class Graph {
@@ -26,16 +27,15 @@ public:
     void print();
 
     std::list<T> passage_in_depth();
+
     std::list<T> passage_in_depth(T node);
 
     std::list<T> nodes();
 
     int count();
 
+    bool is_bipartite();
 
-
-// TODO: Количество компонентов
-// TODO: Двудольный ли граф
 // TODO: Вывод
 // TODO: Обход в ширину
 
@@ -43,7 +43,12 @@ private:
     std::map<T, std::list<T>> adjacency_map = {};
 
     bool contains(std::list<T> *nodes, T node);
+
+    bool contains(std::set<T> *nodes, T node);
+
     void passage_in_depth(T start_node, std::list<T> *visited_list, std::list<T> *ended_list);
+
+    bool is_bipartite(T node, std::set<T> *list_white_nodes, std::set<T> *list_black_nodes, bool color);
 };
 
 template<typename T>
@@ -121,13 +126,9 @@ std::list<T> Graph<T>::passage_in_depth(T node) {
     return ended_list;
 }
 
-
-
-//T start_node = NULL,
 template<typename T>
 void Graph<T>::passage_in_depth(T node, std::list<T> *visited_list, std::list<T> *ended_list) {
-    if (contains(visited_list, node) || contains(ended_list, node)){
-
+    if (contains(visited_list, node) || contains(ended_list, node)) {
         return;
     }
     visited_list->push_back(node);
@@ -144,15 +145,19 @@ bool Graph<T>::contains(std::list<T> *nodes, T node) {
             nodes->end());
 }
 
+template<typename T>
+bool Graph<T>::contains(std::set<T> *nodes, T node) {
+    return (std::find(nodes->begin(), nodes->end(), node) !=
+            nodes->end());
+}
 
 template<typename T>
 std::list<T> Graph<T>::nodes() {
     std::list<T> nodes;
-    for(auto const& imap: adjacency_map)
+    for (auto const &imap: adjacency_map)
         nodes.push_back(imap.first);
     return nodes;
 }
-
 
 template<typename T>
 int Graph<T>::count() {
@@ -161,10 +166,39 @@ int Graph<T>::count() {
     while (!nodes.empty()) {
         T node = nodes.front();
         std::list<T> components = this->passage_in_depth(node);
-        for (auto component:components) {
+        for (auto component: components) {
             nodes.remove(component);
         }
         ++count;
     }
     return count;
+}
+
+template<typename T>
+bool Graph<T>::is_bipartite() {
+    std::set<T> list_white_nodes = std::set<T>();
+    std::set<T> list_black_nodes = std::set<T>();
+    return this->is_bipartite(first(), &list_white_nodes, &list_black_nodes, false);
+}
+
+template<typename T>
+bool Graph<T>::is_bipartite(T node, std::set<T> *list_white_nodes, std::set<T> *list_black_nodes, bool color) {
+    if (contains(list_black_nodes, node)) {
+        return !color;
+    }
+    if (contains(list_white_nodes, node)) {
+        return color;
+    }
+    if (color) {
+        list_white_nodes->insert(node);
+    } else {
+        list_black_nodes->insert(node);
+    }
+    for (auto n: this->adjacency_map[node]) {
+        bool value = this->is_bipartite(n, list_white_nodes, list_black_nodes, !color);
+        if (!value) {
+            return false;
+        }
+    }
+    return true;
 }
