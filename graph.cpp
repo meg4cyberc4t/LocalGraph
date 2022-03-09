@@ -26,6 +26,19 @@ public:
     void print();
 
     std::list<T> passage_in_depth();
+    std::list<T> passage_in_depth(T node);
+
+    std::list<T> nodes();
+
+    int count();
+
+
+
+// TODO: Количество компонентов
+// TODO: Двудольный ли граф
+// TODO: Вывод
+// TODO: Обход в ширину
+
 private:
     std::map<T, std::list<T>> adjacency_map = {};
 
@@ -97,11 +110,17 @@ T Graph<T>::first() {
 
 template<typename T>
 std::list<T> Graph<T>::passage_in_depth() {
+    return this->passage_in_depth(first());
+}
+
+template<typename T>
+std::list<T> Graph<T>::passage_in_depth(T node) {
     std::list<T> visited_list = std::list<T>();
     std::list<T> ended_list = std::list<T>();
-    this->passage_in_depth(first(), &visited_list, &ended_list);
+    this->passage_in_depth(node, &visited_list, &ended_list);
     return ended_list;
 }
+
 
 
 //T start_node = NULL,
@@ -125,3 +144,27 @@ bool Graph<T>::contains(std::list<T> *nodes, T node) {
             nodes->end());
 }
 
+
+template<typename T>
+std::list<T> Graph<T>::nodes() {
+    std::list<T> nodes;
+    for(auto const& imap: adjacency_map)
+        nodes.push_back(imap.first);
+    return nodes;
+}
+
+
+template<typename T>
+int Graph<T>::count() {
+    int count = 0;
+    std::list<T> nodes = this->nodes();
+    while (!nodes.empty()) {
+        T node = nodes.front();
+        std::list<T> components = this->passage_in_depth(node);
+        for (auto component:components) {
+            nodes.remove(component);
+        }
+        ++count;
+    }
+    return count;
+}
