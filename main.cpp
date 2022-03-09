@@ -22,5 +22,8 @@ int main() {
 //    };
     Graph<char> a = Graph<char>(raw);
     a.print();
+    for (auto alo:a.passage_in_depth()) {
+        std::cout << alo;
+    }
     return 0;
 }
