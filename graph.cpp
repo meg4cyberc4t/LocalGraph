@@ -7,6 +7,8 @@
 #include "list"
 #include "set"
 
+#define CONTAINS(list, elem) (std::find(list.begin(), list.end(), elem) != list.end())
+
 template<typename T>
 class Graph {
 public:
@@ -36,15 +38,11 @@ public:
 
     bool is_bipartite();
 
-// TODO: Вывод
+
 // TODO: Обход в ширину
 
 private:
     std::map<T, std::list<T>> adjacency_map = {};
-
-    bool contains(std::list<T> *nodes, T node);
-
-    bool contains(std::set<T> *nodes, T node);
 
     void passage_in_depth(T start_node, std::list<T> *visited_list, std::list<T> *ended_list);
 
@@ -75,10 +73,10 @@ void Graph<T>::add_node(T node) {
 
 template<typename T>
 void Graph<T>::add_edge(T node1, T node2) {
-    if (contains(this->adjacency_map[node1], node2)) {
+    if (CONTAINS(this->adjacency_map[node1], node2)) {
         this->adjacency_map[node1].push_back(node2);
     }
-    if (contains(this->adjacency_map[node2], node1)) {
+    if (CONTAINS(this->adjacency_map[node2], node1)) {
         this->adjacency_map[node2].push_back(node1);
     }
 }
@@ -128,7 +126,7 @@ std::list<T> Graph<T>::passage_in_depth(T node) {
 
 template<typename T>
 void Graph<T>::passage_in_depth(T node, std::list<T> *visited_list, std::list<T> *ended_list) {
-    if (contains(visited_list, node) || contains(ended_list, node)) {
+    if (CONTAINS((*visited_list), node) || CONTAINS((*ended_list), node)) {
         return;
     }
     visited_list->push_back(node);
@@ -139,17 +137,6 @@ void Graph<T>::passage_in_depth(T node, std::list<T> *visited_list, std::list<T>
     ended_list->push_back(node);
 }
 
-template<typename T>
-bool Graph<T>::contains(std::list<T> *nodes, T node) {
-    return (std::find(nodes->begin(), nodes->end(), node) !=
-            nodes->end());
-}
-
-template<typename T>
-bool Graph<T>::contains(std::set<T> *nodes, T node) {
-    return (std::find(nodes->begin(), nodes->end(), node) !=
-            nodes->end());
-}
 
 template<typename T>
 std::list<T> Graph<T>::nodes() {
@@ -183,10 +170,10 @@ bool Graph<T>::is_bipartite() {
 
 template<typename T>
 bool Graph<T>::is_bipartite(T node, std::set<T> *list_white_nodes, std::set<T> *list_black_nodes, bool color) {
-    if (contains(list_black_nodes, node)) {
+    if (CONTAINS((*list_black_nodes), node)) {
         return !color;
     }
-    if (contains(list_white_nodes, node)) {
+    if (CONTAINS((*list_white_nodes), node)) {
         return color;
     }
     if (color) {
