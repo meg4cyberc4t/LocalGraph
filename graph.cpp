@@ -6,6 +6,7 @@
 #include "vector"
 #include "list"
 #include "set"
+#include "queue"
 
 #include "graph.h"
 
@@ -150,4 +151,23 @@ bool Graph<T>::is_bipartite(T node, std::set<T> *list_white_nodes, std::set<T> *
         }
     }
     return true;
+}
+
+template<class T>
+bool Graph<T>::bfs(T from, T to) {
+    std::queue<T> queue = {};
+    std::list<T> visited = {};
+    queue.push(from);
+    visited.push_back(from);
+    while (queue.size() > 0) {
+        T node = queue.back();
+        queue.pop();
+        for (T neighbour: this->adjacency_map[node]) {
+            if (CONTAINS(visited, neighbour)) continue;
+            if (neighbour == to) return true;
+            queue.push(neighbour);
+            visited.push_back(neighbour);
+        }
+    }
+    return false;
 }

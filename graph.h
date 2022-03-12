@@ -41,6 +41,8 @@ public:
 
     bool is_bipartite();
 
+    bool bfs(T from, T to);
+
 private:
     std::map <T, std::list<T>> adjacency_map = {};
 
