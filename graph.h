@@ -43,12 +43,19 @@ public:
 
     bool bfs(T from, T to);
 
+    std::map<T, T>  parents(T from, T to);
+
+    std::list<T> path_between(T from, T to);
+
 private:
     std::map <T, std::list<T>> adjacency_map = {};
 
     void dfs(T start_node, std::list <T> *visited_list, std::list <T> *ended_list);
 
     bool is_bipartite(T node, std::set <T> *list_white_nodes, std::set <T> *list_black_nodes, bool color);
+
+    void path_between(T from, T to, std::list<T>* path, std::map<T, T>* parents);
+
 };
 
 #endif //LOCALGRAPH_GRAPH_H

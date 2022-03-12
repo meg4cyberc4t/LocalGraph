@@ -171,3 +171,40 @@ bool Graph<T>::bfs(T from, T to) {
     }
     return false;
 }
+
+template<class T>
+std::map<T, T> Graph<T>::parents(T from, T to) {
+    std::map<T, T> parents = {};
+    std::queue<T> queue = {};
+    std::list<T> visited = {};
+    queue.push(from);
+    while (queue.size() > 0) {
+        T node = queue.back();
+        queue.pop();
+        visited.push_back(node);
+        for (T neighbour: this->adjacency_map[node]) {
+            if (CONTAINS(visited, neighbour)) continue;
+            if (!parents.contains(neighbour)) parents[neighbour] = node;
+            queue.push(neighbour);
+        }
+        if (node == to) return parents;
+    }
+    return parents;
+}
+
+template<class T>
+std::list<T> Graph<T>::path_between(T from, T to) {
+    std::map parents = this->parents(from, to);
+    std::list<T> path = {};
+    this->path_between(from, to, &path, &parents);
+    return path;
+}
+
+template<class T>
+void Graph<T>::path_between(T from, T to, std::list<T>* path, std::map<T, T>* parents) {
+    path->push_front(to);
+    if (from == to) return;
+    path_between(from, parents->at(to), path, parents);
+}
+
+
