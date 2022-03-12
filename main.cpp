@@ -1,5 +1,15 @@
 #include "graph.cpp"
 
+#define PRINT_LIST(list) \
+std::cout << "[";        \
+for (auto val : list) { std::cout << val; } \
+std::cout << "]"  << std::endl;
+
+#define PRINT_MAP(map) \
+std::cout << "{";        \
+for (auto const&[key, val]: map) { std::cout << key << ":" << val << " "; } \
+std::cout << "}" << std::endl;
+
 int main() {
 //    std::list<char> nodes_list = {'A', 'B', 'C'};
 //    std::list<std::list<int>> adjacency_matrix = {{1, 0, 0}, {0, 0, 0}, {0, 0, 1}};
