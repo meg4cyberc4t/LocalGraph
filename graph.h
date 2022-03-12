@@ -31,9 +31,9 @@ public:
 //
     void print();
 //
-    std::list <T> passage_in_depth();
+    std::list <T> dfs();
 
-    std::list <T> passage_in_depth(T node);
+    std::list <T> dfs(T node);
 
     std::list <T> nodes();
 
@@ -44,7 +44,7 @@ public:
 private:
     std::map <T, std::list<T>> adjacency_map = {};
 
-    void passage_in_depth(T start_node, std::list <T> *visited_list, std::list <T> *ended_list);
+    void dfs(T start_node, std::list <T> *visited_list, std::list <T> *ended_list);
 
     bool is_bipartite(T node, std::set <T> *list_white_nodes, std::set <T> *list_black_nodes, bool color);
 };

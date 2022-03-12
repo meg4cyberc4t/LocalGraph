@@ -74,26 +74,26 @@ T Graph<T>::first() {
 }
 
 template<typename T>
-std::list<T> Graph<T>::passage_in_depth() {
-    return this->passage_in_depth(first());
+std::list<T> Graph<T>::dfs() {
+    return this->dfs(first());
 }
 
 template<typename T>
-std::list<T> Graph<T>::passage_in_depth(T node) {
+std::list<T> Graph<T>::dfs(T node) {
     std::list<T> visited_list = std::list<T>();
     std::list<T> ended_list = std::list<T>();
-    this->passage_in_depth(node, &visited_list, &ended_list);
+    this->dfs(node, &visited_list, &ended_list);
     return ended_list;
 }
 
 template<typename T>
-void Graph<T>::passage_in_depth(T node, std::list<T> *visited_list, std::list<T> *ended_list) {
+void Graph<T>::dfs(T node, std::list<T> *visited_list, std::list<T> *ended_list) {
     if (CONTAINS((*visited_list), node) || CONTAINS((*ended_list), node)) {
         return;
     }
     visited_list->push_back(node);
     for (auto child: adjacency_map[node]) {
-        this->passage_in_depth(child, visited_list, ended_list);
+        this->dfs(child, visited_list, ended_list);
     }
     visited_list->remove(node);
     ended_list->push_back(node);
