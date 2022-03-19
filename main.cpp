@@ -1,6 +1,6 @@
 #include <iostream>
 #include "graph.cpp"
-
+#include "map"
 using namespace std;
 
 string graph_to_string(Graph& graph) {
@@ -18,12 +18,11 @@ string graph_to_string(Graph& graph) {
 }
 
 int main() {
-    auto gr = Graph();
-    gr.add_node(4);
-    gr.add_node(5);
-    gr.add_node(6);
-    gr.add_edge(4, 5);
-    gr.add_edge(4, 6);
+    map<int, map<int, int>> raw = {{1, {{2,0}, {3,0}}},
+                                   {2, {{1, 0}, {3, 0}}},
+                                   {3, {{1, 0}, {2, 0}}}};
+
+    auto gr = Graph(raw);
     cout << gr.nodes.size() << endl;
     cout << graph_to_string(gr);
     return 0;

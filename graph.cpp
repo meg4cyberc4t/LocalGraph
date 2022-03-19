@@ -7,10 +7,31 @@
 #include "list"
 #include "map"
 
-using namespace std;
 
 class Graph {
 public:
+    explicit Graph(const std::map<int, std::map<int, int>>& dictionary_of_adjacency){
+        for (const auto &item : dictionary_of_adjacency){
+            this->add_node(item.first);
+        }
+        for (const auto &item : dictionary_of_adjacency){
+            for (const auto &edge : item.second){
+                this->add_edge(item.first, edge.first, edge.second);
+            }
+        }
+    }
+
+    explicit Graph(const std::map<int, std::list<int>>& dictionary_of_adjacency){
+        for (const auto &item : dictionary_of_adjacency){
+            this->add_node(item.first);
+        }
+        for (const auto &item : dictionary_of_adjacency){
+            for (const auto &edge : item.second){
+                this->add_edge(item.first, edge);
+            }
+        }
+    }
+
     std::list<node *> nodes = {};
 
     void add_node(int value) {
