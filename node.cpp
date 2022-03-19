@@ -3,7 +3,7 @@
 //
 #include "vector"
 
-class node {
+struct node {
 public:
     explicit node(int value) {
         this->value = value;

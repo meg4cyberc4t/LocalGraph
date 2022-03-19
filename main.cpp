@@ -18,12 +18,18 @@ string graph_to_string(Graph& graph) {
 }
 
 int main() {
-    map<int, map<int, int>> raw = {{1, {{2,0}, {3,0}}},
-                                   {2, {{1, 0}, {3, 0}}},
-                                   {3, {{1, 0}, {2, 0}}}};
+//    map<int, list<int>> raw = {{1, {2, 4}},
+//                                   {2, {1, 3}},
+//                                   {3, {2, 4}},
+//                                   {4, {1, 3}},
+//                               {5, {}}
+//    };
+//    map<int, list<int>> raw = {{1, {2}},
+//                               {2, {1}}};
 
     auto gr = Graph(raw);
-    cout << gr.nodes.size() << endl;
-    cout << graph_to_string(gr);
+//    cout << gr.nodes.size() << endl;
+//    cout << graph_to_string(gr);
+    cout << gr.is_twopartie() << endl;
     return 0;
 }
