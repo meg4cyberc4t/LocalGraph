@@ -3,6 +3,7 @@
 
 using namespace std;
 
+string graph_to_string(Graph& graph) {
     string out;
     out += "{\n";
     for (const auto &item: graph.to_dictionary_of_adjacency()) {
