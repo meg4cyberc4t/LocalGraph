@@ -5,6 +5,7 @@
 #include "iostream"
 #include "node.cpp"
 #include "list"
+#include "map"
 
 using namespace std;
 
@@ -24,7 +25,6 @@ public:
         return nullptr;
     }
 
-
     void add_edge(int start, int end, int weight = 0) {
         auto start_node = this->find(start);
         assert(start_node != nullptr);
@@ -34,8 +34,19 @@ public:
         end_node->add_edge(start_node, weight);
     }
 
-    void dispose() {
+    ~Graph() {
         for (const auto &item: this->nodes)
             delete item;
+    }
+
+    std::map<int, std::map<int, int>> to_dictionary_of_adjacency() {
+        std::map<int, std::map<int, int>> result = {};
+        for (const auto &item: this->nodes) {
+            result[item->value] = {};
+            for (const auto &neighbor: item->neighbors) {
+                result[item->value][neighbor.first->value] = neighbor.second;
+            }
+        }
+        return result;
     }
 };
