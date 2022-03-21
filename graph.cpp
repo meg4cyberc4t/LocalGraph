@@ -123,4 +123,25 @@ public:
         }
         return count;
     }
+
+    std::map<node<T> *, int> dijkstra(node<T> *start) {
+        std::map<node<T> *, int> paths;
+        std::queue<node<T> *> queue = {};
+        for (const auto &item: this->nodes)
+            paths[item] = std::numeric_limits<int>::max();
+        paths[start] = 0;
+        queue.push(start);
+        while (!queue.empty()) {
+            auto cur = queue.front();
+            queue.pop();
+            for (const auto &item: cur->neighbors) {
+                auto p = paths[cur] + item.second;
+                if (paths[item.first] > p) {
+                    queue.push(item.first);
+                    paths[item.first] = p;
+                }
+            }
+        }
+        return paths;
+    }
 };

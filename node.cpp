@@ -9,7 +9,7 @@
 
 #define CONTAINS(list, elem) (std::find(list.begin(), list.end(), elem) != list.end())
 
-template <class T>
+template<class T>
 struct node {
 public:
     explicit node(T value) {
