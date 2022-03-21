@@ -96,35 +96,12 @@ public:
         return true;
     }
 
-    std::list<node *> dfs(node *start) {
-        std::list<node *> blacks = {};
-        std::list<node *> grays = {};
-        std::queue<node *> queue = {};
-        queue.push(start);
-        while (!queue.empty()) {
-            node *ptr = queue.front();
-            if (CONTAINS(grays, ptr)) {
-                grays.remove(ptr);
-                blacks.push_back(ptr);
-                queue.pop();
-            } else if (CONTAINS(blacks, ptr)) {
-                queue.pop();
-            } else {
-                grays.push_back(ptr);
-                for (const auto &item: ptr->neighbors) {
-                    queue.push(item.first);
-                }
-            }
-        }
-        return blacks;
-    }
-
-    int count() {
+    [[nodiscard]] int count() const {
         std::list<node *> copy_nodes = nodes;
         int count = 0;
         while (!copy_nodes.empty()) {
             node *ptr = copy_nodes.front();
-            for (const auto &item: this->dfs(ptr)) {
+            for (const auto &item: ptr->dfs()) {
                 copy_nodes.remove(item);
             }
             count++;
