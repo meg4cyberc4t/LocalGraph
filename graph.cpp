@@ -95,4 +95,28 @@ public:
         }
         return true;
     }
+
+    std::list<node *> dfs(node *start) {
+        std::list<node *> blacks = {};
+        std::list<node *> grays = {};
+        std::queue<node *> queue = {};
+        queue.push(start);
+        while (!queue.empty()) {
+            node *ptr = queue.front();
+            if (CONTAINS(grays, ptr)) {
+                grays.remove(ptr);
+                blacks.push_back(ptr);
+                queue.pop();
+            } else if (CONTAINS(blacks, ptr)) {
+                queue.pop();
+            } else {
+                grays.push_back(ptr);
+                for (const auto &item: ptr->neighbors) {
+                    queue.push(item.first);
+                }
+            }
+        }
+        return blacks;
+    }
+
 };
