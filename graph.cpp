@@ -25,6 +25,20 @@ public:
         }
     }
 
+    explicit Graph(std::vector<T> nodes, const std::vector<std::vector<int>> &adjacency_matrix) {
+        for (const auto &item: nodes) {
+            this->add_node(item);
+        }
+        for (int i = 0; i < adjacency_matrix.size(); ++i) {
+            for (int j = 0; j < adjacency_matrix[i].size(); ++j) {
+                if (adjacency_matrix[i][j] > 0) {
+                    this->add_edge(nodes[i], nodes[j], adjacency_matrix[i][j]);
+                }
+            }
+        }
+    }
+
+
     explicit Graph(const std::map<T, std::list<T>> &dictionary_of_adjacency) {
         for (const auto &item: dictionary_of_adjacency) {
             this->add_node(item.first);
