@@ -14,13 +14,13 @@ public:
     }
 
     int value;
-    std::vector<std::pair<node*, int>> neighbors = {};
+    std::vector<std::pair<node *, int>> neighbors = {};
 
-    void add_edge(node* place, int weight = 0){
+    void add_edge(node *place, int weight = 0) {
         this->neighbors.emplace_back(place, weight);
     }
 
-    std::list<node*> dfs() {
+    std::list<node *> dfs() {
         std::list<node *> blacks = {};
         std::list<node *> grays = {};
         std::queue<node *> queue = {};
@@ -41,5 +41,27 @@ public:
             }
         }
         return blacks;
+    }
+
+    bool bfs(node *to) {
+        std::list<node *> visited = {};
+        std::queue<node *> queue = {};
+        queue.push(this);
+        visited.push_back(this);
+        while (!queue.empty()) {
+            node *ptr = queue.front();
+            if (ptr == to) {
+                return true;
+            } else {
+                auto local_neighbors = ptr->neighbors;
+                queue.pop();
+                for (const auto &item: local_neighbors) {
+                    if (CONTAINS(visited, item.first)) continue;
+                    queue.push(item.first);
+                    visited.push_back(item.first);
+                }
+            }
+        }
+        return false;
     }
 };
