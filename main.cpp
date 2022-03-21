@@ -1,9 +1,12 @@
 #include <iostream>
 #include "graph.cpp"
 #include "map"
+#include "vector"
+
 using namespace std;
 
-string graph_to_string(Graph& graph) {
+template<typename T>
+string graph_to_string(Graph<T> &graph) {
     string out;
     out += "{\n";
     for (const auto &item: graph.to_dictionary_of_adjacency()) {
@@ -18,18 +21,25 @@ string graph_to_string(Graph& graph) {
 }
 
 int main() {
-//    map<int, list<int>> raw = {{1, {2, 4}},
-//                                   {2, {1, 3}},
-//                                   {3, {2, 4}},
-//                                   {4, {1, 3}},
-//                               {5, {}}
+//    std::vector<string> nodes = {"v1", "v2", "v3", "v4", "v5", "v6"};
+//    std::vector<std::vector<int>> raw = {
+//            {0, 5, 0, 10, 0, 0},
+//            {0, 0, 0, 0, 0, 11},
+//            {15, 0, 0, 0, 2, 0},
+//            {0, 2, 4, 0, 0, 0},
+//            {0, 0, 0, 7, 0, 6},
+//            {0, 0, 0, 4, 4, 0},
 //    };
-//    map<int, list<int>> raw = {{1, {2}},
-//                               {2, {1}}};
-
-    auto gr = Graph(raw);
-//    cout << gr.nodes.size() << endl;
-//    cout << graph_to_string(gr);
-    cout << gr.is_twopartie() << endl;
-    return 0;
+    map<char, map<char, int>> G = {
+            {'A', {{'B', 5}, {'C', 15}, {'D', 10}}},
+            {'B', {{'D', 2}, {'F', 11}}},
+            {'C', {{'D', 4}, {'E', 6}}},
+            {'D', {{'A', 3}, {'C', 3},  {'E', 5}, {'F', 4}}},
+            {'E', {{'C', 2}, {'F', 6}}},
+            {'F', {{'E', 2}}}
+    };
+    auto gr = Graph<char>(G);
+    for (const auto &item: gr.dijkstra(gr.nodes.front())) {
+        cout << item.first->value << '\t' << item.second << endl;
+    }
 }
