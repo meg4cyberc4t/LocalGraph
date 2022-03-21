@@ -1,210 +1,147 @@
 //
-// Created by Igor Molchanov on 09.03.2022.
+// Created by Igor Molchanov on 18.03.2022.
 //
-#include "iostream"
-#include "map"
-#include "vector"
-#include "list"
-#include "set"
-#include "queue"
 
-#include "graph.h"
+#include "iostream"
+#include "node.cpp"
+#include "list"
+#include "map"
+#include "queue"
+#include "limits"
 
 #define CONTAINS(list, elem) (std::find(list.begin(), list.end(), elem) != list.end())
 
 template<class T>
-Graph<T>::Graph(std::map<T, std::list<T>> &adjacency_map) : adjacency_map(adjacency_map) {
-}
-
-template<class T>
-void Graph<T>::print() {
-    std::cout << "Graph:\t{" << std::endl;
-    for (auto const&[key, val]: adjacency_map) {
-        std::cout << "\t" << key << ':';
-        for (char child_node: val) {
-            std::cout << (T) child_node << " ";
+class Graph {
+public:
+    explicit Graph(const std::map<T, std::map<T, int>> &dictionary_of_adjacency) {
+        for (const auto &item: dictionary_of_adjacency) {
+            this->add_node(item.first);
         }
-        std::cout << "\t\t\t| " << val.size() << " size" << std::endl;
-    }
-    std::cout << "}" << std::endl;
-}
-
-template<class T>
-void Graph<T>::add_node(T node) {
-    this->adjacency_map[node] = {};
-}
-
-template<typename T>
-void Graph<T>::add_edge(T node1, T node2) {
-    if (CONTAINS(this->adjacency_map[node1], node2)) {
-        this->adjacency_map[node1].push_back(node2);
-    }
-    if (CONTAINS(this->adjacency_map[node2], node1)) {
-        this->adjacency_map[node2].push_back(node1);
-    }
-}
-
-template<typename T>
-Graph<T> Graph<T>::from_nodes_edges_lists(std::vector<T> &nodes, std::vector<std::list<T>> &edges_lists) {
-    Graph<T> graph = Graph<T>();
-    for (T node: nodes)
-        graph.add_node(node);
-    for (std::list<T> edge: edges_lists)
-        graph.add_edge(edge.front(), edge.back());
-    return graph;
-}
-
-template<typename T>
-Graph<T> Graph<T>::from_adjacency_matrix(std::vector<T> &nodes, std::vector<std::vector<int>> &adjacency_matrix) {
-    Graph<T> graph = Graph<T>();
-    for (T node: nodes)
-        graph.add_node(node);
-    for (int i = 0; i < adjacency_matrix.size(); ++i) {
-        for (int j = 0; j < adjacency_matrix[i].size(); ++j) {
-            if (adjacency_matrix[i][j] > 0) {
-                graph.add_edge(nodes[i], nodes[j]);
+        for (const auto &item: dictionary_of_adjacency) {
+            for (const auto &edge: item.second) {
+                this->add_edge(item.first, edge.first, edge.second);
             }
         }
     }
-    return graph;
-}
 
-template<typename T>
-T Graph<T>::first() {
-    return this->adjacency_map.begin()->first;
-}
-
-template<typename T>
-std::list<T> Graph<T>::dfs() {
-    return this->dfs(first());
-}
-
-template<typename T>
-std::list<T> Graph<T>::dfs(T node) {
-    std::list<T> visited_list = std::list<T>();
-    std::list<T> ended_list = std::list<T>();
-    this->dfs(node, &visited_list, &ended_list);
-    return ended_list;
-}
-
-template<typename T>
-void Graph<T>::dfs(T node, std::list<T> *visited_list, std::list<T> *ended_list) {
-    if (CONTAINS((*visited_list), node) || CONTAINS((*ended_list), node)) {
-        return;
-    }
-    visited_list->push_back(node);
-    for (auto child: adjacency_map[node]) {
-        this->dfs(child, visited_list, ended_list);
-    }
-    visited_list->remove(node);
-    ended_list->push_back(node);
-}
-
-
-template<typename T>
-std::list<T> Graph<T>::nodes() {
-    std::list<T> nodes;
-    for (auto const &imap: adjacency_map)
-        nodes.push_back(imap.first);
-    return nodes;
-}
-
-template<typename T>
-int Graph<T>::count() {
-    int count = 0;
-    std::list<T> nodes = this->nodes();
-    while (!nodes.empty()) {
-        T node = nodes.front();
-        std::list<T> components = this->passage_in_depth(node);
-        for (auto component: components) {
-            nodes.remove(component);
+    explicit Graph(std::vector<T> nodes, const std::vector<std::vector<int>> &adjacency_matrix) {
+        for (const auto &item: nodes) {
+            this->add_node(item);
         }
-        ++count;
-    }
-    return count;
-}
-
-template<typename T>
-bool Graph<T>::is_bipartite() {
-    std::set<T> list_white_nodes = std::set<T>();
-    std::set<T> list_black_nodes = std::set<T>();
-    return this->is_bipartite(first(), &list_white_nodes, &list_black_nodes, false);
-}
-
-template<typename T>
-bool Graph<T>::is_bipartite(T node, std::set<T> *list_white_nodes, std::set<T> *list_black_nodes, bool color) {
-    if (CONTAINS((*list_black_nodes), node)) {
-        return !color;
-    }
-    if (CONTAINS((*list_white_nodes), node)) {
-        return color;
-    }
-    if (color) {
-        list_white_nodes->insert(node);
-    } else {
-        list_black_nodes->insert(node);
-    }
-    for (auto n: this->adjacency_map[node]) {
-        bool value = this->is_bipartite(n, list_white_nodes, list_black_nodes, !color);
-        if (!value) {
-            return false;
+        for (int i = 0; i < adjacency_matrix.size(); ++i) {
+            for (int j = 0; j < adjacency_matrix[i].size(); ++j) {
+                if (adjacency_matrix[i][j] > 0) {
+                    this->add_edge(nodes[i], nodes[j], adjacency_matrix[i][j]);
+                }
+            }
         }
     }
-    return true;
-}
 
-template<class T>
-bool Graph<T>::bfs(T from, T to) {
-    std::queue<T> queue = {};
-    std::list<T> visited = {};
-    queue.push(from);
-    visited.push_back(from);
-    while (queue.size() > 0) {
-        T node = queue.back();
-        queue.pop();
-        for (T neighbour: this->adjacency_map[node]) {
-            if (CONTAINS(visited, neighbour)) continue;
-            if (neighbour == to) return true;
-            queue.push(neighbour);
-            visited.push_back(neighbour);
+
+    explicit Graph(const std::map<T, std::list<T>> &dictionary_of_adjacency) {
+        for (const auto &item: dictionary_of_adjacency) {
+            this->add_node(item.first);
+        }
+        for (const auto &item: dictionary_of_adjacency) {
+            for (const auto &edge: item.second) {
+                this->add_edge(item.first, edge);
+            }
         }
     }
-    return false;
-}
 
-template<class T>
-std::map<T, T> Graph<T>::parents(T from, T to) {
-    std::map<T, T> parents = {};
-    std::queue<T> queue = {};
-    std::list<T> visited = {};
-    queue.push(from);
-    while (queue.size() > 0) {
-        T node = queue.back();
-        queue.pop();
-        visited.push_back(node);
-        for (T neighbour: this->adjacency_map[node]) {
-            if (CONTAINS(visited, neighbour)) continue;
-            if (!parents.contains(neighbour)) parents[neighbour] = node;
-            queue.push(neighbour);
-        }
-        if (node == to) return parents;
+    std::list<node<T> *> nodes = {};
+
+    void add_node(T value) {
+        auto new_node = new node<T>(value);
+        this->nodes.push_back(new_node);
     }
-    return parents;
-}
 
-template<class T>
-std::list<T> Graph<T>::path_between(T from, T to) {
-    std::map parents = this->parents(from, to);
-    std::list<T> path = {};
-    this->path_between(from, to, &path, &parents);
-    return path;
-}
+    node<T> *find(T value) {
+        for (auto item: nodes) {
+            if (item->value == value) return item;
+        }
+        return nullptr;
+    }
 
-template<class T>
-void Graph<T>::path_between(T from, T to, std::list<T>* path, std::map<T, T>* parents) {
-    path->push_front(to);
-    if (from == to) return;
-    path_between(from, parents->at(to), path, parents);
-}
+    void add_edge(T start, T end, int weight = 0) {
+        auto start_node = this->find(start);
+        assert(start_node != nullptr);
+        auto end_node = this->find(end);
+        assert(end_node != nullptr);
+        start_node->add_edge(end_node, weight);
+    }
 
+    ~Graph() {
+        for (const auto &item: this->nodes)
+            delete item;
+    }
 
+    std::map<int, std::map<int, int>> to_dictionary_of_adjacency() {
+        std::map<int, std::map<int, int>> result = {};
+        for (const auto &item: this->nodes) {
+            result[item->value] = {};
+            for (const auto &neighbor: item->neighbors) {
+                result[item->value][neighbor.first->value] = neighbor.second;
+            }
+        }
+        return result;
+    }
+
+    bool is_twopartie() {
+        std::vector<node<T> *> list_black_nodes = {};
+        std::vector<node<T> *> list_white_nodes = {};
+        std::map<node<T> *, bool> need = {};
+        need.insert({nodes.front(), false});
+        while (!need.empty()) {
+            node<T> *ptr = need.begin()->first;
+            bool color = need.begin()->second;
+            need.erase(need.begin());
+            if (CONTAINS(list_white_nodes, ptr)) {
+                if (!color)
+                    return false;
+                continue;
+            }
+            if (CONTAINS(list_black_nodes, ptr)) {
+                if (color)
+                    return false;
+                continue;
+            }
+        }
+        return true;
+    }
+
+    [[nodiscard]] int count() const {
+        std::list<node<T> *> copy_nodes = nodes;
+        int count = 0;
+        while (!copy_nodes.empty()) {
+            auto ptr = copy_nodes.front();
+            for (const auto &item: ptr->dfs()) {
+                copy_nodes.remove(item);
+            }
+            count++;
+        }
+        return count;
+    }
+
+    std::map<node<T> *, int> dijkstra(node<T> *start) {
+        std::map<node<T> *, int> paths;
+        std::queue<node<T> *> queue = {};
+        for (const auto &item: this->nodes)
+            paths[item] = std::numeric_limits<int>::max();
+        paths[start] = 0;
+        queue.push(start);
+        while (!queue.empty()) {
+            auto cur = queue.front();
+            queue.pop();
+            for (const auto &item: cur->neighbors) {
+                auto p = paths[cur] + item.second;
+                if (paths[item.first] > p) {
+                    queue.push(item.first);
+                    paths[item.first] = p;
+                }
+            }
+        }
+        return paths;
+    }
+};

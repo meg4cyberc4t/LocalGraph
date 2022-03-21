@@ -3,4 +3,4 @@ project(LocalGraph)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(LocalGraph main.cpp graph.cpp)
+add_executable(LocalGraph main.cpp node.cpp graph.cpp)
