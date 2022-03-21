@@ -70,7 +70,6 @@ public:
         auto end_node = this->find(end);
         assert(end_node != nullptr);
         start_node->add_edge(end_node, weight);
-        end_node->add_edge(start_node, weight);
     }
 
     ~Graph() {
