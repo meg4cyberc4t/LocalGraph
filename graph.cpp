@@ -119,4 +119,16 @@ public:
         return blacks;
     }
 
+    int count() {
+        std::list<node *> copy_nodes = nodes;
+        int count = 0;
+        while (!copy_nodes.empty()) {
+            node *ptr = copy_nodes.front();
+            for (const auto &item: this->dfs(ptr)) {
+                copy_nodes.remove(item);
+            }
+            count++;
+        }
+        return count;
+    }
 };
