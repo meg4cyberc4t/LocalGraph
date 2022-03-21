@@ -7,12 +7,14 @@
 #include "list"
 #include "map"
 #include "queue"
+#include "limits"
 
 #define CONTAINS(list, elem) (std::find(list.begin(), list.end(), elem) != list.end())
 
+template<class T>
 class Graph {
 public:
-    explicit Graph(const std::map<int, std::map<int, int>> &dictionary_of_adjacency) {
+    explicit Graph(const std::map<T, std::map<T, int>> &dictionary_of_adjacency) {
         for (const auto &item: dictionary_of_adjacency) {
             this->add_node(item.first);
         }
@@ -23,7 +25,7 @@ public:
         }
     }
 
-    explicit Graph(const std::map<int, std::list<int>> &dictionary_of_adjacency) {
+    explicit Graph(const std::map<T, std::list<T>> &dictionary_of_adjacency) {
         for (const auto &item: dictionary_of_adjacency) {
             this->add_node(item.first);
         }
@@ -34,21 +36,21 @@ public:
         }
     }
 
-    std::list<node *> nodes = {};
+    std::list<node<T> *> nodes = {};
 
-    void add_node(int value) {
-        node *new_node = new node(value);
+    void add_node(T value) {
+        auto new_node = new node<T>(value);
         this->nodes.push_back(new_node);
     }
 
-    node *find(int value) {
-        for (node *item: nodes) {
+    node<T> *find(T value) {
+        for (auto item: nodes) {
             if (item->value == value) return item;
         }
         return nullptr;
     }
 
-    void add_edge(int start, int end, int weight = 0) {
+    void add_edge(T start, T end, int weight = 0) {
         auto start_node = this->find(start);
         assert(start_node != nullptr);
         auto end_node = this->find(end);
@@ -74,12 +76,12 @@ public:
     }
 
     bool is_twopartie() {
-        std::vector<node *> list_black_nodes = {};
-        std::vector<node *> list_white_nodes = {};
-        std::map<node *, bool> need = {};
+        std::vector<node<T> *> list_black_nodes = {};
+        std::vector<node<T> *> list_white_nodes = {};
+        std::map<node<T> *, bool> need = {};
         need.insert({nodes.front(), false});
         while (!need.empty()) {
-            node *ptr = need.begin()->first;
+            node<T> *ptr = need.begin()->first;
             bool color = need.begin()->second;
             need.erase(need.begin());
             if (CONTAINS(list_white_nodes, ptr)) {
@@ -97,10 +99,10 @@ public:
     }
 
     [[nodiscard]] int count() const {
-        std::list<node *> copy_nodes = nodes;
+        std::list<node<T> *> copy_nodes = nodes;
         int count = 0;
         while (!copy_nodes.empty()) {
-            node *ptr = copy_nodes.front();
+            auto ptr = copy_nodes.front();
             for (const auto &item: ptr->dfs()) {
                 copy_nodes.remove(item);
             }

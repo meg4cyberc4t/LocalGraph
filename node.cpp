@@ -4,16 +4,19 @@
 #include "vector"
 #include "list"
 #include "queue"
+#include "map"
+#include "limits"
 
 #define CONTAINS(list, elem) (std::find(list.begin(), list.end(), elem) != list.end())
 
+template <class T>
 struct node {
 public:
-    explicit node(int value) {
+    explicit node(T value) {
         this->value = value;
     }
 
-    int value;
+    T value;
     std::vector<std::pair<node *, int>> neighbors = {};
 
     void add_edge(node *place, int weight = 0) {
