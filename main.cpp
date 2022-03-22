@@ -39,7 +39,11 @@ int main() {
             {'F', {{'E', 2}}}
     };
     auto gr = Graph<char>(G);
-    for (const auto &item: gr.dijkstra(gr.nodes.front())) {
-        cout << item.first->value << '\t' << item.second << endl;
+//    for (const auto &item: gr.dijkstra(gr.nodes.front())) {
+//        cout << item.first->value << '\t' << item.second << endl;
+//    }
+    auto path = gr.dijkstra_path(gr.find('A'), gr.find('E'));
+    for (auto a: path) {
+        cout << a->value << endl;
     }
 }

@@ -17,10 +17,10 @@ public:
     }
 
     T value;
-    std::vector<std::pair<node *, int>> neighbors = {};
+    std::map<node *, int> neighbors = {};
 
     void add_edge(node *place, int weight = 0) {
-        this->neighbors.emplace_back(place, weight);
+        this->neighbors[place] = weight;
     }
 
     std::list<node *> dfs() {

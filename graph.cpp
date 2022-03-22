@@ -144,4 +144,19 @@ public:
         }
         return paths;
     }
+
+    std::vector<node<T> *> dijkstra_path(node<T> *start, node<T> *end) {
+        std::map<node<T> *, int> dij = dijkstra(start);
+        std::vector<node<T> *> path = {};
+        path.push_back(end);
+        while (path.back() != start) {
+            for (node<T> *item: this->nodes) {
+                if (item->neighbors.contains(end) && dij[item] + item->neighbors.at(end) == dij[end]) {
+                    path.push_back(item);
+                    end = item;
+                }
+            }
+        }
+        return path;
+    }
 };
