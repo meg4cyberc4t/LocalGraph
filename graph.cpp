@@ -14,6 +14,8 @@
 template<class T>
 class Graph {
 public:
+    Graph() = default;
+
     explicit Graph(const std::map<T, std::map<T, int>> &dictionary_of_adjacency) {
         for (const auto &item: dictionary_of_adjacency) {
             this->add_node(item.first);
