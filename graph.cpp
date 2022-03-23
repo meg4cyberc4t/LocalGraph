@@ -64,6 +64,14 @@ public:
         return nullptr;
     }
 
+    std::list<node<T>*> find_all(T value) {
+        std::list<node<T>*> list = {};
+        for (auto item: nodes) {
+            if (item->value == value) list.push_back(item);
+        }
+        return list;
+    }
+
     void add_edge(T start, T end, int weight = 0) {
         auto start_node = this->find(start);
         assert(start_node != nullptr);

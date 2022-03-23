@@ -19,7 +19,8 @@ public:
     T value;
     std::map<node *, int> neighbors = {};
 
-    void add_edge(node *place, int weight = 0) {
+    void add_edge(node *place, int weight = 1) {
+        if (place == this) return;
         this->neighbors[place] = weight;
     }
 
