@@ -54,9 +54,10 @@ public:
 
     std::list<node<T> *> nodes = {};
 
-    void add_node(T value) {
+    node<T>* add_node(T value) {
         auto new_node = new node<T>(value);
         this->nodes.push_back(new_node);
+        return new_node;
     }
 
     node<T> *find(T value) {
